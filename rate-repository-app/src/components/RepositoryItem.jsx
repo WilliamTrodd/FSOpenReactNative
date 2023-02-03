@@ -54,9 +54,6 @@ const truncNum = (num) => {
 }
 
 const RepositoryItem = props => {
-
-
-
   return (
     <View style={styles.card}>
       <View style={styles.detailsRow}>
