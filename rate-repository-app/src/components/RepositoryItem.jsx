@@ -1,6 +1,8 @@
 import Text from "./Text";
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet, Image, Pressable} from 'react-native';
+import * as Linking from 'expo-linking';
 import theme from "../theme";
+import useRepository from "../hooks/useRepository";
 
 const styles = StyleSheet.create({
   card: {
@@ -40,7 +42,17 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     padding:3,
     borderRadius: 4,
-  }
+  },
+    button: {
+      backgroundColor: theme.colors.button,
+      alignItems: 'center',
+      margin: 5,
+      paddingVertical: 10,
+      borderRadius: 2,
+      borderWidth: 2,
+      borderColor: theme.colors.tertiary,
+      color: theme.colors.textPrimary
+    }
 });
 
 const truncNum = (num) => {
@@ -55,7 +67,7 @@ const truncNum = (num) => {
 
 const RepositoryItem = props => {
   return (
-    <View style={styles.card}>
+    <View testID="repositoryItem" style={styles.card}>
       <View style={styles.detailsRow}>
         <Image style={styles.logo} source={{uri:props.item.ownerAvatarUrl}}/>
         <View style={styles.flexCol}>
@@ -82,6 +94,10 @@ const RepositoryItem = props => {
           <Text style={styles.flexItem}>Rating</Text>
         </View>
       </View>
+      {props.singleView
+          ? <Pressable style={styles.button} onPress={() => Linking.openURL(props.item.url)}><Text>GitHub</Text></Pressable>
+          : <></>
+        }
     </View>
   )
 };

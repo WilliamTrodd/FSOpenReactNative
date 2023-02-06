@@ -8,7 +8,7 @@ import useSignIn from "../hooks/useSignIn";
 import { useNavigate } from "react-router-native";
 
 const styles = StyleSheet.create({
-  signInButton: {
+  button: {
     backgroundColor: theme.colors.button,
     alignItems: 'center',
     margin: 5,
@@ -34,13 +34,22 @@ const validationSchema = yup.object().shape({
     .required('Password is required')
   })
 
-const SignIn = ({onSubmit}) => (
+export const SignInContainer = ({onSubmit}) => (
   <View>
-    <FormikTextInput name="username" placeholder="Username"/>
-    <FormikTextInput name="password" placeholder="Password" secureTextEntry/>
-    <Pressable style={styles.signInButton} onPress={onSubmit}>
-      <Text >Click Here</Text>
-    </Pressable>
+    <Formik initialValues={initialValues}
+    onSubmit={onSubmit}
+    validationSchema={validationSchema}
+    >
+      {({handleSubmit}) => (
+        <>
+      <FormikTextInput name="username" placeholder="Username"/>
+      <FormikTextInput name="password" placeholder="Password" secureTextEntry/>
+      <Pressable style={styles.button} onPress={handleSubmit}>
+        <Text >Click Here</Text>
+      </Pressable>
+      </>
+      )}
+    </Formik>
   </View>
 
 );
@@ -59,18 +68,7 @@ const SignInForm = () => {
       console.log(e)
     }
   };
-
-
-  return(
-  <Formik initialValues={initialValues} 
-          onSubmit={onSubmit}
-          validationSchema={validationSchema}
-  >
-    {({ handleSubmit }) => (
-      <SignIn onSubmit={handleSubmit}/>
-      )}
-  </Formik>
-
-)};
+  
+  return(<SignInContainer onSubmit={onSubmit}/>)};
 
 export default SignInForm;

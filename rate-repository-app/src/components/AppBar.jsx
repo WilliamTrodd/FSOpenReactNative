@@ -49,7 +49,7 @@ const AppBar = () => {
   const signInSignOut = (loading) => {
     if(!loading){
       return (loggedInUser.data.me 
-        ? <LogOutButton onPress={logout}/> 
+        ? <LogOutButton onPress={logout}/>
         : <AppBarTab text="Sign-In"  dest="/signin"/>)
     } else {
       return <></>
@@ -61,6 +61,7 @@ const AppBar = () => {
     <ScrollView horizontal>
       <AppBarTab text="Repositories" dest="/"/>
       {signInSignOut(loggedInUser.loading)}
+      <AppBarTab text="Create a Review" dest="/createReview" />
     </ScrollView>
   </View>
   )

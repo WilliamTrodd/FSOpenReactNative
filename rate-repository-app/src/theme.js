@@ -23,6 +23,7 @@ const theme = {
     }),
   },
   fontWeights: {
+    light: '200',
     normal: '400',
     bold: '700',
   },

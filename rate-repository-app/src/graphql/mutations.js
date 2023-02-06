@@ -7,3 +7,20 @@ mutation SignIn($credentials: AuthenticateInput) {
   }
 }
 `
+
+export const ADD_REVIEW = gql`
+mutation AddReview($review: CreateReviewInput) {
+  createReview(review: $review) {
+    id
+    createdAt
+    rating
+    repository {
+      ownerName
+      ratingAverage
+      fullName
+      id
+    }
+    text
+  }
+}
+`
