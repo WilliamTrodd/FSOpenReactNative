@@ -78,7 +78,6 @@ const ReviewForm = () => {
     const text = values.text ? values.text : "";
     try {
       const {data} = await addReview({ownerName, rating, repositoryName, text});
-      console.log(data)
       navigate(`/${data.createReview.repository.id}`)
     } catch (e) {
       console.log('ERROR');

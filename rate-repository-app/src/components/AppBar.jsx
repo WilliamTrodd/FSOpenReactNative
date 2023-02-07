@@ -46,22 +46,23 @@ const AppBar = () => {
       navigate("/");
   }
 
-  const signInSignOut = (loading) => {
-    if(!loading){
-      return (loggedInUser.data.me 
-        ? <LogOutButton onPress={logout}/>
-        : <AppBarTab text="Sign-In"  dest="/signin"/>)
-    } else {
-      return <></>
+  const userLoggedIn = (loading) => {
+    if(loading){
+      return false;
     }
-  }
+    if(loggedInUser.data.me) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   return (
   <View style={styles.container}>
     <ScrollView horizontal>
       <AppBarTab text="Repositories" dest="/"/>
-      {signInSignOut(loggedInUser.loading)}
-      <AppBarTab text="Create a Review" dest="/createReview" />
+      {userLoggedIn(loggedInUser.loading) ? <LogOutButton onPress={logout}/> : <AppBarTab text="Sign-In"  dest="/signin"/>}
+      {userLoggedIn(loggedInUser.loading) ? <AppBarTab text="Create a Review" dest="/createReview" /> : <></>}
     </ScrollView>
   </View>
   )
