@@ -4,8 +4,10 @@ import useRepositories from "../hooks/useRepositories";
 import theme from '../theme';
 import Text from "./Text";
 import { useNavigate } from "react-router-native";
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {Picker} from '@react-native-picker/picker';
+import {Searchbar} from 'react-native-paper';
+import {useDebounce} from 'use-debounce';
 
 const styles = StyleSheet.create({
   separator: {
@@ -45,36 +47,67 @@ const SortPicker = ({sort, setSort}) => {
   )
 }
 
-export const RepositoryListContainer = ({ repositories, sort, setSort }) => {
+const RepoSearch = ({searchQuery, setSearchQuery}) => {
+  const onChangeSearch = query => setSearchQuery(query);
 
-  const navigate = useNavigate();
+  return(
+    <Searchbar 
+      placeholder="Search"
+      onChangeText={onChangeSearch}
+      value={searchQuery}
+    />
+  );
+};
 
-  const repoNodes = repositories
-  ? repositories.edges.map(edge => edge.node)
-  : []
+export class RepositoryListContainer extends React.Component {
+
+  renderHeader = () => {
+    const props = this.props;
+    return (
+      <>
+      <RepoSearch searchQuery={props.searchQuery} setSearchQuery={props.setSearchQuery}/>
+      <SortPicker sort={props.sort} setSort={props.setSort}/>
+      </>
+    );
+  };
+
+  render() {
+    const props = this.props;
 
   return (<FlatList
-    data={repoNodes}
+    data={props.repoNodes}
     ItemSeparatorComponent={ItemSeparator}
     renderItem={({item}) => (
-      <Pressable onPress={() => navigate(`/${item.id}`)}>
+      <Pressable onPress={() => props.navigate(`/${item.id}`)}>
         <RepositoryItem item={item}/>
       </Pressable>
     )}
     keyExtractor={item => item.id}
-    ListHeaderComponent={() => <SortPicker sort={sort} setSort={setSort}/>}
+    ListHeaderComponent={this.renderHeader}
   />)
+}
 }
 
 const RepositoryList = () => {
   const [sort, setSort] = useState('latest');
-  const {repositories, loading} = useRepositories(sort);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedText] = useDebounce(searchQuery, 500);
+  const navigate = useNavigate();
 
-  if(loading){
-    return <><Text>LOADING</Text></>
-  }
-
-  return <RepositoryListContainer repositories={repositories} sort={sort} setSort={setSort}/>
+  const {repositories, loading} = useRepositories(sort, debouncedText);
+  
+  const repoNodes = repositories
+    ? repositories.edges.map(edge => edge.node)
+    : []
+    
+  return <RepositoryListContainer repositories={repositories} 
+                                  sort={sort} 
+                                  setSort={setSort}
+                                  searchQuery={searchQuery}
+                                  setSearchQuery={setSearchQuery}
+                                  navigate={navigate}
+                                  repoNodes={repoNodes}
+          />
 };
 
 export default RepositoryList;
