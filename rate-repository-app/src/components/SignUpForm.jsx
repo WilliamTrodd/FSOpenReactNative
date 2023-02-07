@@ -71,7 +71,7 @@ const SignUpForm = () => {
   const onSubmit = async (values) => {
     const {username, password} = values;
     try {
-      const { data } = await signUp({username, password});
+      await signUp({username, password});
       navigate('/');
     } catch (e) {
       console.log('ERROR');

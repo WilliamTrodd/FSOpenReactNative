@@ -8,7 +8,6 @@ const useSignIn = () => {
   const [authenticate, result] = useMutation(SIGN_IN)
 
   const signIn = async({ username, password }) => {
-    console.log('')
     const credentials = {
       username: username,
       password: password
