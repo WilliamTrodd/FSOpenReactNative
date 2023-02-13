@@ -2,7 +2,6 @@ import Text from "./Text";
 import {View, StyleSheet, Image, Pressable} from 'react-native';
 import * as Linking from 'expo-linking';
 import theme from "../theme";
-import useRepository from "../hooks/useRepository";
 
 const styles = StyleSheet.create({
   card: {

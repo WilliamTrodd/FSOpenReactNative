@@ -41,9 +41,9 @@ const AppBar = () => {
   const loggedInUser = useQuery(LOGGED_IN, {fetchPolicy: 'cache-and-network' });
 
   const logout = async () => {
-      await authStorage.removeAccessToken();
-      await apolloClient.resetStore();
-      navigate("/");
+    navigate("/");
+    await authStorage.removeAccessToken();
+    await apolloClient.resetStore();
   }
 
   const userLoggedIn = (loading) => {
@@ -63,6 +63,7 @@ const AppBar = () => {
       <AppBarTab text="Repositories" dest="/"/>
       {userLoggedIn(loggedInUser.loading) ? <LogOutButton onPress={logout}/> : <AppBarTab text="Sign in"  dest="/signin"/>}
       {userLoggedIn(loggedInUser.loading) ? <AppBarTab text="Create a Review" dest="/createReview" /> : <AppBarTab text="Sign up" dest="/signup" ></AppBarTab>}
+      {userLoggedIn(loggedInUser.loading) ? <AppBarTab text="Show Reviews" dest="/myReviews"></AppBarTab> : <></>}
     </ScrollView>
   </View>
   )

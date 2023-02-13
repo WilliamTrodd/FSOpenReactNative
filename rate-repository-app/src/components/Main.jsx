@@ -8,6 +8,7 @@ import theme from "../theme";
 import AppBar from "./AppBar";
 import SignInForm from "./SignIn";
 import SignUpForm from "./SignUpForm";
+import ReviewList from "./ReviewList";
 
 const styles = StyleSheet.create({
   container: {
@@ -28,6 +29,7 @@ const Main = () => {
         <Route path="*" element={<Navigate to="/" replace/>} />
         <Route path="/createReview" element={<ReviewForm />}/>
         <Route path="/signup" element={<SignUpForm />}/>
+        <Route path="/myReviews" element={<ReviewList />} />
       </Routes>
     </View>
   );

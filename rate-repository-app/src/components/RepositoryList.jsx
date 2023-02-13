@@ -2,7 +2,6 @@ import { FlatList, View, StyleSheet, Pressable } from 'react-native';
 import RepositoryItem from "./RepositoryItem";
 import useRepositories from "../hooks/useRepositories";
 import theme from '../theme';
-import Text from "./Text";
 import { useNavigate } from "react-router-native";
 import React, {useState} from 'react';
 import {Picker} from '@react-native-picker/picker';
@@ -72,18 +71,18 @@ export class RepositoryListContainer extends React.Component {
   };
 
   render() {
-    const props = this.props;
-
   return (<FlatList
-    data={props.repoNodes}
+    data={this.props.repoNodes}
     ItemSeparatorComponent={ItemSeparator}
     renderItem={({item}) => (
-      <Pressable onPress={() => props.navigate(`/${item.id}`)}>
+      <Pressable onPress={() => this.props.navigate(`/${item.id}`)}>
         <RepositoryItem item={item}/>
       </Pressable>
     )}
     keyExtractor={item => item.id}
     ListHeaderComponent={this.renderHeader}
+    onEndReached={this.props.onEndReach}
+    onEndReachedThreshold={0.5}
   />)
 }
 }
@@ -94,19 +93,50 @@ const RepositoryList = () => {
   const [debouncedText] = useDebounce(searchQuery, 500);
   const navigate = useNavigate();
 
-  const {repositories, loading} = useRepositories(sort, debouncedText);
+  let order, criteria;
+
+  switch(sort){
+    case('latest'):
+      order = 'DESC';
+      criteria = 'CREATED_AT';
+      break;
+    case('highest'):
+      order = 'DESC';
+      criteria = 'RATING_AVERAGE';
+      break;
+    case('lowest'):
+      order = 'ASC'
+      criteria = 'RATING_AVERAGE';
+      break;
+    default:
+      order = 'DESC';
+      criteria = 'CREATED_AT';
+      break;
+  }
+
+
+  const {repositories, fetchMore} = useRepositories({
+                                                  orderBy: criteria, 
+                                                  orderDirection: order,
+                                                  searchKeyword: debouncedText,
+                                                  first: 8,
+                                                });
+
+  const onEndReach = () => {
+    fetchMore();
+  };
   
   const repoNodes = repositories
     ? repositories.edges.map(edge => edge.node)
     : []
     
-  return <RepositoryListContainer repositories={repositories} 
-                                  sort={sort} 
+  return <RepositoryListContainer sort={sort} 
                                   setSort={setSort}
                                   searchQuery={searchQuery}
                                   setSearchQuery={setSearchQuery}
                                   navigate={navigate}
                                   repoNodes={repoNodes}
+                                  onEndReach={onEndReach}
           />
 };
 
